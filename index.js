@@ -16,12 +16,9 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 // Serve static frontend
 app.use(express.static(path.join(__dirname, 'dist')))
 
-// 🔥 DO NOT define app.get('/') manually
 
-// Fallback for React Router
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
-})
+
+
 
 let persons=[
     { 
@@ -94,6 +91,10 @@ app.delete('/api/persons/:id', (req, res) => {
   persons = persons.filter(person => person.id !== id);
   res.status(204).end();
 });
+// Fallback for React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
