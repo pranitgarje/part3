@@ -92,10 +92,8 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end();
 });
 // Fallback for React Router
-app.get('*', (req, res, next) => {
-  if (req.originalUrl.startsWith('/api')) {
-    return next(); // skip if it's an API route
-  }
+// Replace your current wildcard route with this:
+app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
