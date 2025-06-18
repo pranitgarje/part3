@@ -1,17 +1,28 @@
 const express = require('express')
 const cors = require('cors')
-const morgan = require('morgan');
-const app= express();
+const morgan = require('morgan')
+const path = require('path')
 
+const app = express()
 
 app.use(cors())
-app.use(express.json());
+app.use(express.json())
 
 morgan.token('body', (req) => {
-  return req.method === 'POST' ? JSON.stringify(req.body) : '';
-});
-// Custom format to include request body for POST requests
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+  return req.method === 'POST' ? JSON.stringify(req.body) : ''
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+// Serve static frontend
+app.use(express.static(path.join(__dirname, 'dist')))
+
+// 🔥 DO NOT define app.get('/') manually
+
+// Fallback for React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+
 let persons=[
     { 
       "id": "1",
@@ -34,9 +45,7 @@ let persons=[
       "number": "39-23-6423122"
     }
 ]
-app.get('/',(req,res) => {
-  res.send('<h1>Hello World!</h1>');
-})
+
 app.get("/api/info", (req, res) => {
   const date = new Date();
   res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${date}</p>`);
